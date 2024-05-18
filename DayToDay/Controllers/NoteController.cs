@@ -66,14 +66,10 @@ public class NoteController : ControllerBase
     [HttpPost("RemoveNotesByGroup")]
     public async Task<IActionResult> RemoveNotesByGroup([FromBody] NoteDTO noteDto)
     {
-        Console.WriteLine("ENTERED");
         int groupID = _dataContext.Group.Where(i => i.Name == noteDto.GroupName).Select(i => i.Id).FirstOrDefault();
-        Console.WriteLine("GROUPID: " + groupID);
         if (groupID == null) return BadRequest();
         var notes = _dataContext.Notes.Where(i => i.GroupId == groupID).ToList();
-        Console.WriteLine("NOTES: " + notes);
         foreach (var item in notes) _dataContext.Notes.Remove(item);
-        Console.WriteLine("JOEHOE");
         await _dataContext.SaveChangesAsync();
         return Ok(new { status = 200, message = "Deleted all from group " + noteDto.GroupName });
     }
