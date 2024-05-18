@@ -617,6 +617,7 @@ FodyWeavers.xsd
 *.config
 *.vsidx
 *.suo
+*.db
 *.db-shm
 *.db-wal
 *.DS_store
