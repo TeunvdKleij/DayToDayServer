@@ -73,4 +73,5 @@ public class NoteController : ControllerBase
         await _dataContext.SaveChangesAsync();
         return Ok(new { status = 200, message = "Deleted all from group " + noteDto.GroupName });
     }
+    
 }

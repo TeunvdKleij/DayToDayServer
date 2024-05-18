@@ -19,6 +19,7 @@ ConfigurationManager configuration = builder.Configuration;
 var MyAllowSpecificOrigins = "myAllowSpecificOrigins";
 
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddCors(options => {
     options.AddPolicy(name: MyAllowSpecificOrigins,
         builder => {
@@ -113,9 +114,6 @@ app.UseHttpsRedirection();
 app.UseCors(MyAllowSpecificOrigins);
 
 app.MapControllers();
-
-app.UseHangfireDashboard();
-app.MapHangfireDashboard();
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()

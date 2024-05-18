@@ -617,7 +617,6 @@ FodyWeavers.xsd
 *.config
 *.vsidx
 *.suo
-*.db
 *.db-shm
 *.db-wal
 *.DS_store
@@ -625,4 +624,6 @@ Dbbackups
 
 *.env
 .env
+
+
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,rider,dotnetcore,aspnetcore
