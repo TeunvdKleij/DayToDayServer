@@ -91,22 +91,22 @@ builder.Services.AddHangfire(config => config.
     .UseSQLiteStorage(builder.Configuration.GetConnectionString("DefaultConnection"))
 
 );
-// GlobalConfiguration.Configuration
-//     .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-//     .UseSimpleAssemblyNameTypeSerializer()
-//     .UseRecommendedSerializerSettings()
-//     .UseSQLiteStorage("DataSource=app.db;");
-// BackgroundJob.Enqueue(() => Console.WriteLine("Hello, world!"));
-// using (var server = new BackgroundJobServer())
-// {
-//     Console.ReadLine();
-// }
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
+    dbContext.Database.Migrate();
+    if (!dbContext.Group.Any())
+    {
+        dbContext.Group.Add(new GroupModel() { Name = "Home", });
+        dbContext.SaveChanges();
+    }
 }
 
 app.UseHttpsRedirection();

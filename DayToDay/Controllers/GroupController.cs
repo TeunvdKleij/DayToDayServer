@@ -20,7 +20,7 @@ public class GroupController : ControllerBase
     public async Task<IActionResult> GetGroups()
     {
         var res = _dataContext.Group.Select(i => i.Name).ToList();
-        if (res == null) return BadRequest();
+        if (res == null) return BadRequest(new {showAddGroup = true});
         return Ok(new { groups = res });
     }
     [HttpPost("AddGroup")]
