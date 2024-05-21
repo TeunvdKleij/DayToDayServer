@@ -1,20 +1,29 @@
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+# Base image for the runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-EXPOSE 80
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
+EXPOSE 8080
+
+# Use the official .NET Core SDK as a parent image
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /app
+
+# Copy the project file and restore any dependencies (use .csproj for the project name)
 COPY *.csproj ./
 RUN dotnet restore
-COPY . ./
-WORKDIR /src
-RUN dotnet build --no-restore -c Release -o /app/build
-FROM build AS publish
-RUN dotnet publish --no-restore -c Release -o /app/publish
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
-ENV ASPNETCORE_ENVIRONMENT=Production
-ENV ConnectionStrings__DefaultConnection="Data Source=/app/app.db"
 
-# Run the application
-ENTRYPOINT ["dotnet", "YourProjectName.dll"]
+# Copy the rest of the application code
+COPY . .
+
+# Publish the application
+RUN dotnet publish -c Release -o out
+
+# Build the runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR /app
+COPY --from=build /app/out ./
+
+# Expose the port your application will run on
+EXPOSE 5116
+
+# Start the application
+ENTRYPOINT ["dotnet", "DayToDay.dll"]
