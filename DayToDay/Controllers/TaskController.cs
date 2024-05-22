@@ -3,7 +3,6 @@ using System.Runtime.InteropServices.JavaScript;
 using DayToDay.Data;
 using DayToDay.Models;
 using DayToDay.Models.DTO;
-using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,7 +42,6 @@ public class TaskController : ControllerBase
     {
         var groupID = _dataContext.Group.Where(i => i.Name == taskDto.GroupName).Select(i => i.Id).FirstOrDefault();
         var tasks = _dataContext.Tasks.Where(i => i.GroupId == groupID).ToList();
-        Console.WriteLine(tasks.Count);
         return Ok(new {tasks = tasks});
     }
     
@@ -132,7 +130,6 @@ public class TaskController : ControllerBase
     public async Task<IActionResult> DeleteTask([FromBody] TaskDTO deleteTask)
     {
         TaskModel task = _dataContext.Tasks.FirstOrDefault(i => i.TaskId == deleteTask.Id.ToString());
-        Console.WriteLine(task);
         _dataContext.Remove(task);
         await _dataContext.SaveChangesAsync();
         return Ok();

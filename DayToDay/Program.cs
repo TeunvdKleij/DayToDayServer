@@ -2,9 +2,6 @@ using System.Text;
 using DayToDay.Data;
 using DayToDay.Models;
 using DayToDay.Services;
-using Hangfire;
-using Hangfire.SQLite;
-using Hangfire.Storage.SQLite;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,20 +21,24 @@ builder.Services.AddCors(options => {
     options.AddPolicy(name: MyAllowSpecificOrigins,
         builder => {
             builder
-                .WithOrigins("http://localhost:3000")
-                .WithOrigins("http://localhost:3001")
-                .WithOrigins("http://127.0.0.1:3000")
-                .WithOrigins("http://10.0.0.92:3000")
-                .WithMethods("POST")
-                .WithMethods("GET")
-                .WithMethods("PUT")
-                .WithMethods("OPTIONS")
-                .WithMethods("DELETE")
+                .WithOrigins(
+                    "http://localhost:3000",
+                    "http://localhost:3001",
+                    "http://127.0.0.1:3000",
+                    "http://10.0.0.92:3000",
+                    "http://192.168.1.241:3000",
+                    "http://192.168.1.241:3001",
+                    "http://172.20.10.6:3000",
+                    "http://172.20.10.6:3001"
+                )
+                .WithMethods("POST", "GET", "PUT", "OPTIONS", "DELETE")
                 .AllowAnyHeader()
                 .AllowCredentials();
         });
 });
 builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<LogService>();
+builder.Services.AddScoped<GroupService>();
 
 builder.Services.AddIdentity<UserModel, IdentityRole>()
     .AddEntityFrameworkStores<DataContext>()
@@ -84,13 +85,6 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File("logs/AccessLog.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
-
-builder.Services.AddHangfire(config => config.
-    UseSimpleAssemblyNameTypeSerializer()
-    .UseRecommendedSerializerSettings()
-    .UseSQLiteStorage(builder.Configuration.GetConnectionString("DefaultConnection"))
-
-);
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
