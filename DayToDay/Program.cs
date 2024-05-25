@@ -36,9 +36,10 @@ builder.Services.AddCors(options => {
                 .AllowCredentials();
         });
 });
-builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<TaskService>();
 builder.Services.AddScoped<LogService>();
 builder.Services.AddScoped<GroupService>();
+builder.Services.AddScoped<NoteService>();
 
 builder.Services.AddIdentity<UserModel, IdentityRole>()
     .AddEntityFrameworkStores<DataContext>()
@@ -83,7 +84,7 @@ builder.Services.AddSwaggerGen();
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .WriteTo.Console()
-    .WriteTo.File("logs/AccessLog.txt", rollingInterval: RollingInterval.Day)
+    .WriteTo.File("logs/AccessLog.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 31)
     .CreateLogger();
 
 var app = builder.Build();

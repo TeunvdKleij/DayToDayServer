@@ -53,11 +53,11 @@ public class GroupService
         await _dataContext.SaveChangesAsync();
     }
 
-    public async Task<IActionResult> DeleteGroup(GroupDTO groupDto)
+    public async Task<IActionResult> RemoveGroup(GroupDTO groupDto)
     {
         GroupModel group = _dataContext.Group.Where(i => i.Name == groupDto.Name).FirstOrDefault();
         _dataContext.Group.Remove(group);
         await _dataContext.SaveChangesAsync();
-        return new OkObjectResult(new { status = 200, message = "Deleted all from group " + groupDto.Name });
+        return new OkObjectResult(new { status = 200, message = "Removed all from group " + groupDto.Name });
     }
 }

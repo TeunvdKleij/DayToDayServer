@@ -28,9 +28,10 @@ public class GroupController : ControllerBase
         return await _groupService.GetGroupsAfterAddingGroup(groupDto);
     }
     [HttpPost("RemoveGroup")]
-    public async Task<IActionResult> DeleteGroup([FromBody] GroupDTO groupDto)
+    public async Task<IActionResult> RemoveGroup([FromBody] GroupDTO groupDto)
     {
-        return await _groupService.DeleteGroup(groupDto);
+        return await _groupService.RemoveGroup(groupDto);
     }
+    
     
 }

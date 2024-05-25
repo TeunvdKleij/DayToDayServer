@@ -11,17 +11,17 @@ public class NoteDTO
     public int? GroupId { get; set; }
     public string? GroupName { get; set; }
     
-    public async Task<NoteModel> AddNote(DataContext _dataContext, NoteDTO noteDto)
+    public async Task<NoteModel> AddNote(DataContext _dataContext)
     {
         try
         {
-            if (string.IsNullOrEmpty(noteDto.NoteText)) return null;
-            int groupID = _dataContext.Group.Where(i => i.Name == noteDto.GroupName).Select(i => i.Id).FirstOrDefault();
+            if (string.IsNullOrEmpty(NoteText)) return null;
+            int groupID = _dataContext.Group.Where(i => i.Name == GroupName).Select(i => i.Id).FirstOrDefault();
             if (groupID == null) return null;
             NoteModel newNote = new NoteModel
             {
-                NoteText = noteDto.NoteText,
-                dateAdded = DateTime.Now.Date.AddDays((double)noteDto.ChangedDate),
+                NoteText = NoteText,
+                dateAdded = DateTime.Now.Date.AddDays((double)ChangedDate),
                 GroupId = groupID
             };
             _dataContext.Notes.Add(newNote);
