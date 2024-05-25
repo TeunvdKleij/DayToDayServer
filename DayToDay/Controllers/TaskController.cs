@@ -30,7 +30,7 @@ public class TaskController : ControllerBase
     [HttpPost("TasksForAGroup")]
     public async Task<IActionResult> GetTasksForAGroup([FromBody] TaskDTO taskDto)
     {
-        return await _taskService.GetTasksForADay(taskDto);
+        return await _taskService.GetTasksForAGroup(taskDto);
     }
     
     [HttpPut("UpdateTaskDate")]
