@@ -113,7 +113,7 @@ using (var scope = app.Services.CreateScope())
             foreach (string dbFile in dbFiles) File.Delete(dbFile);
         string fileToCopy = "./app.db";
         string destinationDirectory = "./Dbbackups/"+ DateTime.Now.ToString("ddMMyyyy") +"app.db";
-        File.Copy(fileToCopy, destinationDirectory);
+        if (File.Exists(fileToCopy)) File.Copy(fileToCopy, destinationDirectory);
     }
 }
 
