@@ -34,7 +34,8 @@ public class GroupService
 
     public async Task<IActionResult> GetGroupsAfterAddingGroup(GroupDTO groupDto)
     {
-        if (string.IsNullOrEmpty(groupDto.Name)) return new BadRequestObjectResult(new{});
+        if (string.IsNullOrEmpty(groupDto.Name) || groupDto.Name.Length > 20) 
+            return new BadRequestObjectResult(new{});
         var groups = _dataContext.Group.Select(i => i.Name).ToList();
         if (groups.Contains(groupDto.Name)) return new BadRequestObjectResult(new{});
         
