@@ -102,6 +102,19 @@ using (var scope = app.Services.CreateScope())
         dbContext.Group.Add(new GroupModel() { Name = "Home", });
         dbContext.SaveChanges();
     }
+    if (File.Exists("./Dbbackups/" + DateTime.Now.ToString("ddMMyyyy") + "app.db"))
+    {
+        Log.Information("Db backed up already");
+    }
+    else
+    {
+        string[] dbFiles = Directory.GetFiles("./Dbbackups/", "*.db");
+        if (dbFiles.Length > 0) 
+            foreach (string dbFile in dbFiles) File.Delete(dbFile);
+        string fileToCopy = "./app.db";
+        string destinationDirectory = "./Dbbackups/"+ DateTime.Now.ToString("ddMMyyyy") +"app.db";
+        File.Copy(fileToCopy, destinationDirectory);
+    }
 }
 
 app.UseHttpsRedirection();
