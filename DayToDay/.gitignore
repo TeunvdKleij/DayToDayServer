@@ -621,7 +621,7 @@ FodyWeavers.xsd
 *.db-shm
 *.db-wal
 *.DS_store
-Dbbackups
+Dbbackups/**
 
 *.env
 .env

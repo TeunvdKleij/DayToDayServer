@@ -61,8 +61,7 @@ builder.Services.AddAuthentication(options => {
             ValidateLifetime = true,
             ValidAudience = configuration["JWT:ValidAudience"],
             ValidIssuer = configuration["JWT:ValidIssuer"],
-
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(System.Environment.GetEnvironmentVariable("JWT_KEY")))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ditisdeencryptie"))
         };
     });
 
@@ -101,7 +100,7 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.Migrate();
     if (!dbContext.Group.Any())
     {
-        dbContext.Group.Add(new GroupModel() { Name = "Home", });
+        dbContext.Group.Add(new GroupModel() { Name = "Home"});
         dbContext.SaveChanges();
     }
     if (File.Exists("./Dbbackups/" + DateTime.Now.ToString("ddMMyyyy") + "app.db"))
@@ -113,13 +112,13 @@ using (var scope = app.Services.CreateScope())
         string[] dbFiles = Directory.GetFiles("./Dbbackups/", "*.db");
         if (dbFiles.Length > 0) 
             foreach (string dbFile in dbFiles) File.Delete(dbFile);
-        string fileToCopy = "./app.db";
+        string fileToCopy = "./database/app.db";
         string destinationDirectory = "./Dbbackups/"+ DateTime.Now.ToString("ddMMyyyy") +"app.db";
         if (File.Exists(fileToCopy)) File.Copy(fileToCopy, destinationDirectory);
     }
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseCors(MyAllowSpecificOrigins);
 

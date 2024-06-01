@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  dotnet-app:
+    image: dotnet-app:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8090:8090"  # Pas dit aan afhankelijk van je applicatie poort
+    environment:
+      - ASPNETCORE_ENVIRONMENT=production  # Stel je omgevingsvariabele in indien nodig
+    volumes:
+      - nuget-packages:/root/.nuget/packages
+      - ./database:/app/database
+      - ./Dbbackups:/app/Dbbackups
+
+volumes:
+  nuget-packages:
+
