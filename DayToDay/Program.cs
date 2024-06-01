@@ -40,6 +40,8 @@ builder.Services.AddScoped<TaskService>();
 builder.Services.AddScoped<LogService>();
 builder.Services.AddScoped<GroupService>();
 builder.Services.AddScoped<NoteService>();
+builder.Services.AddScoped<ValidationService>();
+builder.Services.AddScoped<UserService>();
 
 builder.Services.AddIdentity<UserModel, IdentityRole>()
     .AddEntityFrameworkStores<DataContext>()

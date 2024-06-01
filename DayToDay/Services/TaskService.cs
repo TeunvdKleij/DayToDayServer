@@ -12,11 +12,13 @@ public class TaskService
 {
     private readonly DataContext _dataContext;
     private readonly LogService _logService;
+    private readonly ValidationService _validationService;
 
-    public TaskService(DataContext dataContext, LogService logService)
+    public TaskService(DataContext dataContext, LogService logService, ValidationService validationService)
     {
         _dataContext = dataContext;
         _logService = logService;
+        _validationService = validationService;
     }
 
     public async Task<IActionResult> GetTasksForADay(TaskDTO taskDto)
@@ -97,17 +99,18 @@ public class TaskService
 
     public async Task<IActionResult> UpdateTaskValue(TaskDTO updateTask)
     {
-        TaskModel task = _dataContext.Tasks.FirstOrDefault(i => i.TaskId == (updateTask.Id).ToString());
+        TaskModel task = _dataContext.Tasks.FirstOrDefault(i => i.TaskId == updateTask.Id.ToString());
         if (task == null)
         {
             _logService.ErrorLog(nameof(TaskController), nameof(UpdateTaskValue), "No task found");
             return new BadRequestObjectResult("No task found");
         }
 
-        task.TaskName = (string)updateTask.TaskName;
+        string taskName = _validationService.replaceHTML((string)updateTask.TaskName);
+        task.TaskName = taskName;
         _dataContext.Update(task);
         await _dataContext.SaveChangesAsync();
-        return new OkObjectResult(new { message = task.TaskName });
+        return new OkObjectResult(new { message = taskName });
     }
 
     public async Task<IActionResult> AddTask(TaskDTO task)
@@ -140,8 +143,8 @@ public class TaskService
         }
         if (task.GroupName == null)
         {
-            _logService.ErrorLog(nameof(TaskController), nameof(AddTask), "No groupname provided");
-            return new BadRequestObjectResult("No groupname provided");
+            _logService.ErrorLog(nameof(TaskController), nameof(AddTask), "No groupName provided");
+            return new BadRequestObjectResult("No groupName provided");
         }
         if (task.ChangedDate == null)
         { 
@@ -154,16 +157,19 @@ public class TaskService
             _logService.ErrorLog(nameof(TaskController), nameof(AddTask), "No groupId found");
             return new BadRequestObjectResult("No groupId found");
         }
-        ProcessAddTask(task,taskId,groupId);
+
+        string taskValue = _validationService.replaceHTML(task.TaskName);
+        ProcessAddTask(task, taskValue,taskId,groupId);
         return new OkObjectResult(new { id = taskId });
     }
 
-    public async void ProcessAddTask(TaskDTO task, int taskId, int groupId)
+    public async void ProcessAddTask(TaskDTO task, string taskValue, int taskId, int groupId)
     {
+        
         TaskModel newTask = new TaskModel
         {
             TaskId = taskId.ToString(),
-            TaskName = task.TaskName,
+            TaskName = taskValue,
             Done = false,
             dateAdded = DateTime.Now.Date.AddDays((double)task.ChangedDate),
             GroupId = groupId
